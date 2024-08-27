@@ -7,6 +7,7 @@ class NewsAdmin(admin.ModelAdmin):
     ordering = ['date_create']
     search_fields = ['title', 'content']
     search_help_text = 'Поиск в новостях'
+    list_editable = ['is_published']
 
 admin.site.register(News, NewsAdmin)
 
@@ -18,11 +19,11 @@ class LocationsAdmin(admin.ModelAdmin):
 
 admin.site.register(Location, LocationsAdmin)
 
-class CourtsAdmin(admin.ModelAdmin):
+class CourtAdmin(admin.ModelAdmin):
     list_display =['court_number', 'location', 'capacity']
     ordering = ['location', 'court_number']
 
-admin.site.register(Court, CourtsAdmin)
+admin.site.register(Court, CourtAdmin)
 
 class TournamentAdmin(admin.ModelAdmin):
     list_display =['date', 'title', 'comands_quantity', 'is_active']

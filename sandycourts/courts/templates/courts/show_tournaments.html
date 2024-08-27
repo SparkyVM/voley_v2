@@ -3,8 +3,28 @@
 {% block content %}
 
 <h2>Турниры</h2>
+<!-- Выбор статуса тернира -->
+<div class="btn-group dropend">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    Статус
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item active" href="#" aria-current="true">Идет</a></li>
+    <li><a class="dropdown-item" href="#">Завершен</a></li>
+  </ul>
+</div>
+<div class="btn-group dropend">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    Год
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item active" href="#" aria-current="true">2024</a></li>
+    <li><a class="dropdown-item" href="#">2023</a></li>
+  </ul>
+</div>
+
+<!-- Формирование списка турниров -->
 <div class="row row-cols-1 row-cols-md-4 g-4">
- 
   {% for tournament in tournaments %} 
   <div class="col"> 
   <div class="card" style="width: 18rem;">

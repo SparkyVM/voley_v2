@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Аренда</h2>
+
+<!-- Фильтр местоположения -->
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Местоположение
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Манеж «Партизан»</a></li>
+    <li><a class="dropdown-item" href="#">Самара Арена</a></li>
+    <li><a class="dropdown-item" href="#">Манеж «Восход»</a></li>
+  </ul>
+</div>
+
+<!-- Вывод списка кортов -->
+<div class="row row-cols-1 row-cols-md-4 g-4">
+ 
+  {% for court in courts %} 
+  <div class="col"> 
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">{{ court.court_number }}</h5>
+      <p class="card-text">{{ court.location }}</p>
+      <p class="card-text">{{ court.capacity }}</p>
+      <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Открыть</a>
+    </div>
+  </div>
+</div>
+  {% endfor %}  
+
+</div>
+
+
+{% endblock %}

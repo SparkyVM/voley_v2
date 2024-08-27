@@ -2,6 +2,9 @@ from django.db import models
 from django.urls import reverse
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=1)
 
 class News(models.Model):
 
@@ -17,6 +20,9 @@ class News(models.Model):
                                MaxLengthValidator(100, message="Максимум 100 символов"),
                            ])
     is_published = models.BooleanField(default=True, verbose_name="Статус")
+
+    objects = models.Manager()
+    published = PublishedManager()
     
     def get_absolute_url(self):
         return reverse('post', kwargs = {'post_slug': self.slug})
@@ -66,7 +72,7 @@ class Trainer(models.Model):
     location = models.ForeignKey('Location', on_delete=models.PROTECT, verbose_name = 'Расположение')
 
     def get_absolute_url(self):
-        return reverse('trainer', kwargs = {'trainer_id': self.pk})
+        return reverse('train', kwargs = {'trainer_id': self.pk})
     
     def __str__(self) -> str:
         return f'{self.last_name} {self.first_name}'
@@ -99,6 +105,9 @@ class Court(models.Model):
     price_weekday2 = models.DecimalField(max_digits=7, decimal_places=2, verbose_name ='Цена. Будни-вечер')
     price_weekend = models.DecimalField(max_digits=7, decimal_places=2, verbose_name ='Цена. Выходной')
 
+    def get_absolute_url(self):
+        return reverse('court', kwargs = {'court_id': self.pk})
+    
     def __str__(self) -> str:
         return f'{self.court_number}'
     
