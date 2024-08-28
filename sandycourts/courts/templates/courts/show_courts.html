@@ -23,16 +23,19 @@
   <div class="col"> 
   <div class="card" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title">{{ court.court_number }}</h5>
-      <p class="card-text">{{ court.location }}</p>
-      <p class="card-text">{{ court.capacity }}</p>
-      <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Открыть</a>
+      <h5 class="card-title">Корт №{{ court.court_number }}</h5>
+      <p class="card-text">Местоположение: {{ court.location }}</p>
+      <p class="card-text">Вместимость: {{ court.capacity }}</p>
+      <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Арендовать</a>
     </div>
   </div>
 </div>
   {% endfor %}  
 
 </div>
+<hr>
+<a href="{% url 'res' %}" class="btn btn-primary">Брони</a>
+<a href="{% url 'addres' %}" class="btn btn-primary">Добавить бронь</a>
 
 
 {% endblock %}

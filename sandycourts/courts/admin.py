@@ -41,3 +41,9 @@ class TrainerAdmin(admin.ModelAdmin):
     search_help_text = 'Поиск тренера'
 
 admin.site.register(Trainer, TrainerAdmin)
+
+class ReserveAdmin(admin.ModelAdmin):
+    list_display =['date_reserve', 'time_reserve', 'court_id', 'quantity', 'user_id']
+    ordering = ['-date_reserve']
+
+admin.site.register(Reserve, ReserveAdmin)

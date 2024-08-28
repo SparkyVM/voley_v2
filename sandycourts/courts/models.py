@@ -1,11 +1,20 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.contrib.auth import get_user_model
 
+
+    # Менеджер для Новостей
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_published=1)
 
+   # Менеджер для Турниров 
+class ActiveTournamentManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=1)
+
+    # Класс для Новостей
 class News(models.Model):
 
     title = models.CharField(max_length=150, verbose_name ='Заголовок')
@@ -34,7 +43,8 @@ class News(models.Model):
         verbose_name = 'Новости'
         verbose_name_plural = 'Новости'
         ordering = ['-date_create']
-
+    
+    # Класс для Турниров
 class Tournament(models.Model):
     GENDER_CHOICES = (
         ('M', 'Мужской'),
@@ -55,6 +65,9 @@ class Tournament(models.Model):
                            ])
     is_active = models.BooleanField(default=True, verbose_name = 'Статус')
 
+    objects = models.Manager()
+    active = ActiveTournamentManager()
+
     def get_absolute_url(self):
         return reverse('tournament', kwargs = {'tournament_slug': self.slug})
     
@@ -65,6 +78,7 @@ class Tournament(models.Model):
         verbose_name = 'Турнир'
         verbose_name_plural = 'Турниры'
     
+    # Класс для Тренеров
 class Trainer(models.Model):    
     last_name = models.CharField(max_length=30, verbose_name = 'Фамилия')
     first_name = models.CharField(max_length=30, verbose_name = 'Имя')
@@ -81,6 +95,7 @@ class Trainer(models.Model):
         verbose_name = 'Тренер'
         verbose_name_plural = 'Тренеры'
 
+    # Класс для Местоположений
 class Location(models.Model):
     name = models.CharField(max_length=50, verbose_name ='Название')
     adress = models.CharField(max_length=100, verbose_name ='Адрес')
@@ -97,6 +112,7 @@ class Location(models.Model):
         verbose_name = 'Локация'
         verbose_name_plural = 'Локации'
 
+    # Класс для Кортов
 class Court(models.Model):
     court_number = models.IntegerField(default=0, verbose_name ='№ корта')
     capacity = models.IntegerField(default=0, verbose_name ='Вместимость')
@@ -114,3 +130,26 @@ class Court(models.Model):
     class Meta:
         verbose_name = 'Корт'
         verbose_name_plural = 'Корты'
+
+    # Класс для Брони
+class Reserve(models.Model):
+    START_TIME = 8
+    END_TIME = 22
+    Time_choices = (
+        (i, f'{i}:00') for i in range(START_TIME, END_TIME)
+    )
+
+    date_reserve = models.DateField(verbose_name = 'Дата проведения')
+    time_reserve = models.IntegerField(choices=Time_choices, verbose_name="Время брони")
+    quantity = models.IntegerField(default=1, verbose_name ='Кол-во человек')
+    user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='reserves', null=True, default=None)
+    court_id = models.ForeignKey(Court, on_delete=models.PROTECT, verbose_name ='Корт')
+    trainer_id = models.ForeignKey(Trainer, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name ='Тренер')
+
+    def __str__(self) -> str:
+        return f'Бронь на {self.date_reserve} в {self.time_reserve}'
+    
+    class Meta:
+        verbose_name = 'Бронь'
+        verbose_name_plural = 'Брони'
+

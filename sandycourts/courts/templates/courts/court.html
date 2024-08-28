@@ -1,8 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{court.court_number}}</h1>
-<p>{{court.location}}</p>
+<h1>Аренда Корта №{{court.court_number}} </h1>
+<p>Местоположение: {{court.location}}</p>
+<p>Вместимость: {{court.capacity}}</p>
 
-{{court.capacity}}
+<hr>
+<p>Выберите дату</p>
+<input type="date" атрибуты>
+<br>
+<br>
+<p>Выберите время</p>
+  <div class="btn-group" role="group" aria-label="Группа кнопок по умолчанию">
+    <button type="button" class="btn btn-outline-dark">8:00</button>
+    <button type="button" class="btn btn-outline-dark">9:00</button>
+    <button type="button" class="btn btn-outline-dark">10:00</button>
+    <button type="button" class="btn btn-outline-dark">11:00</button>
+    <button type="button" class="btn btn-outline-dark">12:00</button>
+    <button type="button" class="btn btn-outline-dark" disabled>13:00</button>
+    <button type="button" class="btn btn-outline-dark" disabled>14:00</button>
+    <button type="button" class="btn btn-outline-dark">15:00</button>
+    <button type="button" class="btn btn-outline-dark">16:00</button>
+    <button type="button" class="btn btn-outline-dark">17:00</button>
+    <button type="button" class="btn btn-outline-dark">18:00</button>
+    <button type="button" class="btn btn-outline-dark">19:00</button>
+    <button type="button" class="btn btn-outline-dark">20:00</button>
+    <button type="button" class="btn btn-outline-dark">21:00</button>
+  </div>
+  <br>
+  <br>
+  <p>Количество человек</p>
+  <p><input type="number" name="players" value="1" min="1" max="15" step="1"></p>
+  <a href="#" class="btn btn-primary">Забронировать</a>
+
 {% endblock %}

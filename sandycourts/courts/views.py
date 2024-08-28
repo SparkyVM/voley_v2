@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404, render
 from django.db import models
-from django.views.generic import ListView, DetailView 
+from django.views.generic import ListView, DetailView, CreateView
 from .models import *
+from .forms import AddReserveForm
 
 menu = [
     {'title': "Новости", 'url_name': 'news'},           # Позже добавить меню
@@ -75,6 +76,7 @@ class TournamentList(ListView):
     model = Tournament
     template_name = 'courts/show_tournaments.html'
     context_object_name = 'tournaments'
+    status_selected = 1
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -95,7 +97,26 @@ class ShowTournament(DetailView):
     
     def get_object(self, queryset=None):
         return get_object_or_404(Tournament.objects.filter(slug=self.kwargs.get('tournament_slug')))
+'''
+# НОВЫЙ КОД
+class TournamentStatus(ListView):
+    template_name = 'courts/show_tournaments.html'
+    context_object_name = 'tournaments'
+    allow_empty = False
 
+    def get_queryset(self):
+        return Tournament.active.filter(status__id=self.kwargs['status_id']).select_related("status")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        status = context['tournament'][0].cat
+        return self.get_mixin_context(context,
+                                      title='Категория - ' + cat.name,
+                                      cat_selected=cat.pk,
+                                      )
+'''
+
+    
 # Классы для Тренеровок
   
 class TrainerList(ListView):
@@ -110,7 +131,6 @@ class TrainerList(ListView):
     
 class ShowTrainer(DetailView):
     template_name = 'courts/trainer.html'
-    #slug_url_kwarg = 'post_slug'
     context_object_name = 'trainer'
 
     def get_context_data(self, **kwargs):
@@ -149,3 +169,24 @@ class ShowCourt(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
     
+    # Классы для Брони
+class ReservesList(ListView):
+    model = Reserve
+    template_name = 'courts/show_reserves.html'
+    context_object_name = 'reserves'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title']="Бронь"
+        return context
+    
+class AddReserve(CreateView):
+    form_class = AddReserveForm
+    template_name = 'courts/add_reserve.html'
+    title_page = 'Добавление брони'
+    permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
+
+    def form_valid(self, form):
+        w = form.save(commit=False)
+        w.user_id = self.request.user
+        return super().form_valid(form)

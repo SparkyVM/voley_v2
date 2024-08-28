@@ -26,4 +26,7 @@ urlpatterns = [
         # Аренда
     path('courts/', CourtsList.as_view(), name='courts'),
     path('courts/<int:court_id>/', ShowCourt.as_view(), name='court'),
+
+    path('res/', ReservesList.as_view(), name='res'),
+    path('addres/', AddReserve.as_view(), name='addres'),
 ]
