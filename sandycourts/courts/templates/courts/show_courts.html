@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load courts_tags %}
+
 {% block content %}
 
 <h2>Аренда</h2>
@@ -15,6 +17,43 @@
     <li><a class="dropdown-item" href="#">Манеж «Восход»</a></li>
   </ul>
 </div>
+<!-- Фильтр местоположения 2 -->
+ <p>Местоположение</p>
+<div class="btn-group" role="group" aria-label="Местоположение">
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+  <label class="btn btn-outline-primary" for="btnradio1">Все</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio2">Манеж «Партизан»</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio3">Самара Арена</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio4">Манеж «Восход»</label>
+</div>
+<hr>
+
+<!-- Фильтр местоположения 3 -->
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+  <tr>
+  <!-- Sidebar слева -->
+    <td valign="top" class="left-chapters">
+    <ul id="leftchapters">
+      {% if loc_selected == 0 %}
+        <li class="selected">Все категории</li>
+      {% else %}
+        <li><a href="{% url 'courts' %}">Все категории</a></li>
+      {% endif %}
+  
+      {% show_location loc_selected %}
+  
+      
+  
+    </ul>
+  </td>
+</td></tr></table>
+
 
 <!-- Вывод списка кортов -->
 <div class="row row-cols-1 row-cols-md-4 g-4">

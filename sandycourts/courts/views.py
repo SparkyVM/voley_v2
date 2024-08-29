@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404, render
 from django.db import models
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from .models import *
+from .utils import DataMixin
 from .forms import AddReserveForm
 
 menu = [
@@ -149,6 +151,7 @@ class CourtsList(ListView):
     model = Court
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
+    cat_selected = 0
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,13 +183,43 @@ class ReservesList(ListView):
         context['title']="Бронь"
         return context
     
+    # Добавление брони
 class AddReserve(CreateView):
     form_class = AddReserveForm
     template_name = 'courts/add_reserve.html'
     title_page = 'Добавление брони'
     permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        w = form.save(commit=False)
-        w.user_id = self.request.user
+        res = form.save(commit=False)
+        res.user_id = self.request.user
         return super().form_valid(form)
+    '''
+    model = Court
+    template_name = 'courts/show_courts.html'
+    context_object_name = 'courts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title']="Аренда"
+        return context
+    '''
+    
+    
+    # Фильтр Кортов по Местоположению
+class CourtLocation (DataMixin, ListView):
+    template_name = 'courts/show_courts.html'
+    context_object_name = 'courts'
+    allow_empty = False
+
+    def get_queryset(self):
+        return Court.objects.all().filter(location__id=self.kwargs['loc_id']).select_related("location")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        loc = context['courts'][0].location
+        return self.get_mixin_context(context,
+                                      title='Местоположение - ' + loc.name,
+                                      loc_selected=loc.pk,
+                                      )

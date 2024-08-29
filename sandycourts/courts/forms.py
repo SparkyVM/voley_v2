@@ -2,25 +2,32 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.deconstruct import deconstructible
-
-from .models import Reserve
+from datetime import datetime
+from .models import Reserve, Court, Trainer
 
 class AddReserveForm(forms.ModelForm):
-    #cat = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Категория не выбрана", label="Категории")
-    #husband = forms.ModelChoiceField(queryset=Husband.objects.all(), empty_label="Не замужем", required=False, label="Муж")
+    court_id = forms.ModelChoiceField(queryset=Court.objects.all(), empty_label="Корт не выбран", label="Корт")
+    trainer_id = forms.ModelChoiceField(queryset=Trainer.objects.all(), required=False, empty_label="Без тренера", label="Тренер")
+
 
     class Meta:
         model = Reserve
-        fields = ['date_reserve', 'time_reserve', 'court_id', 'quantity', 'user_id','trainer_id']
+        fields = ['date_reserve', 'time_reserve', 'court_id', 'quantity', 'trainer_id']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-input'}),
-            'content': forms.Textarea(attrs={'cols': 50, 'rows': 5}),
+            'date_reserve': forms.DateInput(attrs={'type': 'date'})
         }
-        labels = {'slug': 'URL'}
 
     def clean_title(self):
         title = self.cleaned_data['title']
         if len(title) > 50:
             raise ValidationError("Длина превышает 50 символов")
-
         return title
+    
+    def clean_date(self):
+        dt = self.cleaned_data['date_reserve']
+        if dt < datetime.now:
+            raise ValidationError("Дата должна быть больше текущей")
+
+        return dt
+
+    

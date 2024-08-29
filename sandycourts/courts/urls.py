@@ -4,6 +4,7 @@ from courts.views import *
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('about/', TemplateView.as_view(template_name='courts/about.html'), name='about'),
 
         # Новости
     path('news/', NewsList.as_view(), name='news'),
@@ -29,4 +30,7 @@ urlpatterns = [
 
     path('res/', ReservesList.as_view(), name='res'),
     path('addres/', AddReserve.as_view(), name='addres'),
+
+    
+    path('location/<int:loc_id>/', CourtLocation.as_view(), name='location'),
 ]
