@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!--
 <h1>Аренда Корта №{{court.court_number}} </h1>
 <p>Местоположение: {{court.location}}</p>
 <p>Вместимость: {{court.capacity}}</p>
--->
+
 <hr>
-<!-- Вариант с Кнопками 
 <p>Выберите дату</p>
 <input type="date" атрибуты>
 <br>
@@ -29,27 +27,10 @@
     <button type="button" class="btn btn-outline-dark">20:00</button>
     <button type="button" class="btn btn-outline-dark">21:00</button>
   </div>
+  <br>
+  <br>
   <p>Количество человек</p>
   <p><input type="number" name="players" value="1" min="1" max="15" step="1"></p>
-  <a href="#" class="btn btn-primary">Забронировать</a>-->
-
-
-<!-- Вариант с Формой -->
-<h1>Заголовок: {{title}}</h1>
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-error">{{ form.non_field_errors }}</div>
-    {% for f in form %}
-        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-        <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}
-    <p><button type="submit">Отправить</button></p>
-</form>
+  <a href="#" class="btn btn-primary">Забронировать</a>
 
 {% endblock %}
-
-
-
-
-
-

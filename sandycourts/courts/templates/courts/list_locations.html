@@ -1,7 +1,7 @@
 {% for loc in locs %}
     {% if loc.id == loc_selected %}
-        <li class="selected">{{loc.name}}</li>
+        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">{{loc.name}}</a>
     {% else %}
-        <li><a href="{{ loc.get_absolute_url }}">{{loc.name}}</a></li>
+        <a href="{{ loc.get_absolute_url }}" class="list-group-item list-group-item-action">{{loc.name}}</a>
     {% endif %}
 {% endfor %}

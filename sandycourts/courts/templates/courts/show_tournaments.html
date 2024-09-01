@@ -3,6 +3,7 @@
 {% block content %}
 
 <h2>Турниры</h2>
+
 <!-- Выбор статуса тернира -->
 <div class="btn-group dropend">
   <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -13,6 +14,10 @@
     <li><a class="dropdown-item" href="#">Завершен</a></li>
   </ul>
 </div>
+
+<br><br>
+
+<!-- Выбор года проведения 
 <div class="btn-group dropend">
   <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
     Год
@@ -21,7 +26,7 @@
     <li><a class="dropdown-item active" href="#" aria-current="true">2024</a></li>
     <li><a class="dropdown-item" href="#">2023</a></li>
   </ul>
-</div>
+</div> -->
 
 <!-- Формирование списка турниров -->
 <div class="row row-cols-1 row-cols-md-4 g-4">
@@ -30,8 +35,9 @@
   <div class="card" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title">{{ tournament.title }}</h5>
-      <p class="card-text">{{ tournament.date }}</p>
-      <p class="card-text">{{ tournament.comands_quantity }}</p>
+      <p class="card-text">Дата: {{ tournament.date }}</p>
+      <p class="card-text">Количество команд: {{ tournament.comands_quantity }}</p>
+      <p class="card-text">Призовой фонд: {{ tournament.prize }}</p>
       <a href="{{ tournament.get_absolute_url }}" class="btn btn-primary">Открыть</a>
     </div>
   </div>

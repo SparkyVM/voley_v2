@@ -1,0 +1,7 @@
+{% for loc in locs %}
+    {% if loc.id == loc_selected %}
+        <li class="selected">{{loc.name}}</li>
+    {% else %}
+        <li><a href="{{ loc.get_absolute_url }}">{{loc.name}}</a></li>
+    {% endif %}
+{% endfor %}

@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from .models import *
 from .utils import DataMixin
-from .forms import AddReserveForm
+from .forms import AddReserveForm, AddNewsForm
 
 menu = [
     {'title': "Новости", 'url_name': 'news'},           # Позже добавить меню
@@ -147,17 +147,18 @@ class ShowTrainer(DetailView):
     
 # Классы для Аренд
 
-class CourtsList(ListView):
+class CourtsList(DataMixin, ListView):
     model = Court
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
-    cat_selected = 0
+    loc_selected = 0
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title']="Аренда"
         return context
-    
+
+'''
 class ShowCourt(DetailView):
     template_name = 'courts/court.html'
     context_object_name = 'court'
@@ -168,6 +169,21 @@ class ShowCourt(DetailView):
         #context['menu'] = menu
         #context['something'] =News.objects.filter(pk=self.kwargs.get('post_id'))
         return context
+    
+    def get_object(self, queryset=None):
+        return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
+'''
+class ShowCourt(CreateView):
+    form_class = AddReserveForm
+    template_name = 'courts/court.html'
+    title_page = 'Добавление брони'
+    permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
+    #success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
+
+    def form_valid(self, form):
+        res = form.save(commit=False)
+        res.user_id = self.request.user
+        return super().form_valid(form)
     
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
@@ -189,7 +205,7 @@ class AddReserve(CreateView):
     template_name = 'courts/add_reserve.html'
     title_page = 'Добавление брони'
     permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
-    success_url = reverse_lazy('home')
+    #success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
 
     def form_valid(self, form):
         res = form.save(commit=False)
@@ -205,8 +221,20 @@ class AddReserve(CreateView):
         context['title']="Аренда"
         return context
     '''
-    
-    
+
+    # Добавление Новости
+class AddNews(CreateView):
+    form_class = AddNewsForm
+    template_name = 'courts/add_news.html'
+    title_page = 'Добавление новости'
+    permission_required = 'courts.add_news' # <приложение>.<действие>_<таблица>
+    #success_url = reverse_lazy('news')     # Проверить!!! должно перенаправляться GetURL модели sdfgdfhgd
+
+    def form_valid(self, form):
+        res = form.save(commit=False)
+        #res.user_id = self.request.user
+        return super().form_valid(form)
+
     # Фильтр Кортов по Местоположению
 class CourtLocation (DataMixin, ListView):
     template_name = 'courts/show_courts.html'

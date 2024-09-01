@@ -7,52 +7,18 @@
 <h2>Аренда</h2>
 
 <!-- Фильтр местоположения -->
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Местоположение
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="#">Манеж «Партизан»</a></li>
-    <li><a class="dropdown-item" href="#">Самара Арена</a></li>
-    <li><a class="dropdown-item" href="#">Манеж «Восход»</a></li>
-  </ul>
-</div>
-<!-- Фильтр местоположения 2 -->
- <p>Местоположение</p>
-<div class="btn-group" role="group" aria-label="Местоположение">
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-  <label class="btn btn-outline-primary" for="btnradio1">Все</label>
-
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-  <label class="btn btn-outline-primary" for="btnradio2">Манеж «Партизан»</label>
-
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-  <label class="btn btn-outline-primary" for="btnradio3">Самара Арена</label>
-
-  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
-  <label class="btn btn-outline-primary" for="btnradio4">Манеж «Восход»</label>
-</div>
-<hr>
-
-<!-- Фильтр местоположения 3 -->
-<table class="table-content" border=0 cellpadding="0" cellspacing="0">
-  <tr>
-  <!-- Sidebar слева -->
-    <td valign="top" class="left-chapters">
-    <ul id="leftchapters">
-      {% if loc_selected == 0 %}
-        <li class="selected">Все категории</li>
-      {% else %}
-        <li><a href="{% url 'courts' %}">Все категории</a></li>
-      {% endif %}
+<p>Местоположение</p>
+<ul class="list-group list-group-horizontal">
+  {% if loc_selected == 0 %}
+    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">Все</a>
+  {% else %}
+    <a href="{% url 'courts' %}" class="list-group-item list-group-item-action" aria-current="true">Все</a>
+  {% endif %}
   
-      {% show_location loc_selected %}
-  
-      
-  
-    </ul>
-  </td>
-</td></tr></table>
+  {% show_location loc_selected %}
+
+</ul>
+<br>
 
 
 <!-- Вывод списка кортов -->
@@ -72,9 +38,5 @@
   {% endfor %}  
 
 </div>
-<hr>
-<a href="{% url 'res' %}" class="btn btn-primary">Брони</a>
-<a href="{% url 'addres' %}" class="btn btn-primary">Добавить бронь</a>
-
 
 {% endblock %}

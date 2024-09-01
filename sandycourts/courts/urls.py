@@ -4,12 +4,13 @@ from courts.views import *
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('about/', TemplateView.as_view(template_name='courts/about.html'), name='about'),
+    path('about/info/', TemplateView.as_view(template_name='courts/about.html'), name='about'),
 
         # Новости
     path('news/', NewsList.as_view(), name='news'),
-    path('news/<slug:post_slug>/', ShowPost.as_view(), name='post'), 
-    #path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
+    path('news/<slug:post_slug>/', ShowPost.as_view(), name='post'),
+    path('addnews/', AddNews.as_view(), name='addnews'),
+    # path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
 
         # Контакты
     path('contacts/', LocationList.as_view(), name='contacts'),
@@ -18,7 +19,8 @@ urlpatterns = [
         # Турниры
     path('tournaments/', TournamentList.as_view(), name='tournaments'), 
     path('tournaments/<slug:tournament_slug>/', ShowTournament.as_view(), name='tournament'), 
-    #path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
+    path('tournaments/<int:loc_id>/', CourtLocation.as_view(), name='location'),
+    # path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
 
         # Тренеровка
     path('trains/', TrainerList.as_view(), name='trains'),
@@ -26,11 +28,12 @@ urlpatterns = [
 
         # Аренда
     path('courts/', CourtsList.as_view(), name='courts'),
-    path('courts/<int:court_id>/', ShowCourt.as_view(), name='court'),
+    path('courts/<int:court_id>/', ShowCourt.as_view(), name='court'),      # Нужен ли
+    path('location/<int:loc_id>/', CourtLocation.as_view(), name='location'),
 
     path('res/', ReservesList.as_view(), name='res'),
     path('addres/', AddReserve.as_view(), name='addres'),
 
     
-    path('location/<int:loc_id>/', CourtLocation.as_view(), name='location'),
+    
 ]

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load courts_tags %}
+
+{% block content %}
+
+<h2>Аренда</h2>
+
+<!-- Фильтр местоположения 
+<div class="btn-group" role="group" aria-label="Местоположение">
+  {% if loc_selected == 0 %}
+    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+    <label class="btn btn-outline-primary" for="btnradio1">Все</label>
+  {% else %}
+    <li><a href="{% url 'courts' %}">Все катеdгории</a></li>
+  {% endif %}-->
+  {% show_location loc_selected %}
+
+</div>
+<hr>
+<!-- Фильтр местоположения 2 -->
+ <p>Местоположение</p>
+<div class="btn-group" role="group" aria-label="Местоположение">
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+  <label class="btn btn-outline-primary" for="btnradio1">Все</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio2">Манеж «Партизан»</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio3">Самара Арена</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+  <label class="btn btn-outline-primary" for="btnradio4">Манеж «Восход»</label>
+</div>
+<hr>
+
+<!-- Фильтр местоположения 3 -->
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+  <tr>
+  <!-- Sidebar слева -->
+    <td valign="top" class="left-chapters">
+    <ul id="leftchapters">
+      {% if loc_selected == 0 %}
+        <li class="selected">Все категории</li>
+      {% else %}
+        <li><a href="{% url 'courts' %}">Все категории</a></li>
+      {% endif %}
+  
+      <!--{% show_location loc_selected %}-->
+  
+      
+  
+    </ul>
+  </td>
+</td></tr></table>
+
+
+<!-- Вывод списка кортов -->
+<div class="row row-cols-1 row-cols-md-4 g-4">
+ 
+  {% for court in courts %} 
+  <div class="col"> 
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Корт №{{ court.court_number }}</h5>
+      <p class="card-text">Местоположение: {{ court.location }}</p>
+      <p class="card-text">Вместимость: {{ court.capacity }}</p>
+      <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Арендовать</a>
+    </div>
+  </div>
+</div>
+  {% endfor %}  
+
+</div>
+
+{% endblock %}

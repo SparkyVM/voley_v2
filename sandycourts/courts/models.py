@@ -146,6 +146,9 @@ class Reserve(models.Model):
     court_id = models.ForeignKey(Court, on_delete=models.PROTECT, verbose_name ='Корт')
     trainer_id = models.ForeignKey(Trainer, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name ='Тренер')
 
+    def get_absolute_url(self):
+        return reverse('reserve', kwargs = {'reserve_id': self.pk})
+    
     def __str__(self) -> str:
         return f'Бронь на {self.date_reserve} в {self.time_reserve}'
     
