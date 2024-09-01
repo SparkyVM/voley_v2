@@ -25,18 +25,23 @@
 <div class="row row-cols-1 row-cols-md-4 g-4">
  
   {% for court in courts %} 
-  <div class="col"> 
-  <div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Корт №{{ court.court_number }}</h5>
-      <p class="card-text">Местоположение: {{ court.location }}</p>
-      <p class="card-text">Вместимость: {{ court.capacity }}</p>
-      <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Арендовать</a>
+    <div class="col"> 
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Корт №{{ court.court_number }}</h5>
+          <p class="card-text">Местоположение: {{ court.location }}</p>
+          <p class="card-text">Вместимость: {{ court.capacity }}</p>
+          <a href="{{ court.get_absolute_url }}" class="btn btn-primary">Арендовать</a>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   {% endfor %}  
 
 </div>
+
+<!-- Дополнительный блок -->
+<hr>
+    <a href="{% url 'res' %}" class="btn btn-primary">Брони</a>
+    <a href="{% url 'addres' %}" class="btn btn-primary">Добавить бронь</a>
 
 {% endblock %}

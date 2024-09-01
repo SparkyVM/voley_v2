@@ -10,10 +10,20 @@
     Статус
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item active" href="#" aria-current="true">Идет</a></li>
-    <li><a class="dropdown-item" href="#">Завершен</a></li>
+    {% if status == 1 %}
+      <li><a class="dropdown-item active" href="{% url 'tournaments' 1 %}" aria-current="true">Идет</a></li>
+      <li><a class="dropdown-item" href="{% url 'tournaments' 0 %}">Завершен</a></li>
+    {% else %}
+      <li><a class="dropdown-item" href="{% url 'tournaments' 1 %}" aria-current="true">Идет</a></li>
+      <li><a class="dropdown-item active" href="{% url 'tournaments' 0 %}">Завершен</a></li>
+    {% endif %} 
+
+
+    <!--<li><a class="dropdown-item active" href="{% url 'tournaments' 1 %}" aria-current="true">Идет</a></li>
+    <li><a class="dropdown-item" href="{% url 'tournaments' 0 %}">Завершен</a></li>-->
   </ul>
 </div>
+
 
 <br><br>
 

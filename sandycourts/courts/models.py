@@ -69,7 +69,7 @@ class Tournament(models.Model):
     active = ActiveTournamentManager()
 
     def get_absolute_url(self):
-        return reverse('tournament', kwargs = {'tournament_slug': self.slug})
+        return reverse('tnmt_res', kwargs = {'tournament_slug': self.slug})
     
     def __str__(self) -> str:
         return self.title

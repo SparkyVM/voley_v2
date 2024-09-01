@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from .models import *
-from .utils import DataMixin
+from .utils import LocationMixin, StatusMixin
 from .forms import AddReserveForm, AddNewsForm
 
 menu = [
@@ -78,12 +79,18 @@ class TournamentList(ListView):
     model = Tournament
     template_name = 'courts/show_tournaments.html'
     context_object_name = 'tournaments'
-    status_selected = 1
+    #status_selected = 1
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title']="Турниры"
+        context['status']=self.kwargs['stat']
         return context
+    
+    def get_queryset(self):
+        #print('___________', stat)
+        return Tournament.objects.all().filter(is_active=self.kwargs['stat'])
+        #return Court.objects.all().filter(location__id=self.kwargs['loc_id']).select_related("location")
 
 class ShowTournament(DetailView):
     template_name = 'courts/tournament.html'
@@ -147,7 +154,7 @@ class ShowTrainer(DetailView):
     
 # Классы для Аренд
 
-class CourtsList(DataMixin, ListView):
+class CourtsList(LocationMixin, ListView):
     model = Court
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
@@ -173,7 +180,7 @@ class ShowCourt(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
 '''
-class ShowCourt(CreateView):
+class ShowCourt(LoginRequiredMixin, CreateView):
     form_class = AddReserveForm
     template_name = 'courts/court.html'
     title_page = 'Добавление брони'
@@ -189,7 +196,7 @@ class ShowCourt(CreateView):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
     
     # Классы для Брони
-class ReservesList(ListView):
+class ReservesList(LoginRequiredMixin, ListView):
     model = Reserve
     template_name = 'courts/show_reserves.html'
     context_object_name = 'reserves'
@@ -200,7 +207,7 @@ class ReservesList(ListView):
         return context
     
     # Добавление брони
-class AddReserve(CreateView):
+class AddReserve(LoginRequiredMixin, CreateView):
     form_class = AddReserveForm
     template_name = 'courts/add_reserve.html'
     title_page = 'Добавление брони'
@@ -223,7 +230,7 @@ class AddReserve(CreateView):
     '''
 
     # Добавление Новости
-class AddNews(CreateView):
+class AddNews(LoginRequiredMixin, CreateView):
     form_class = AddNewsForm
     template_name = 'courts/add_news.html'
     title_page = 'Добавление новости'
@@ -236,7 +243,7 @@ class AddNews(CreateView):
         return super().form_valid(form)
 
     # Фильтр Кортов по Местоположению
-class CourtLocation (DataMixin, ListView):
+class CourtLocation (LocationMixin, ListView):
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
     allow_empty = False
