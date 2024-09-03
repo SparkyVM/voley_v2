@@ -101,6 +101,8 @@ class Location(models.Model):
     adress = models.CharField(max_length=100, verbose_name ='Адрес')
     phone_number = models.CharField(max_length=30, verbose_name ='Телефон')
     courts = models.IntegerField(default=0, verbose_name ='Кол-во кортов')
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", default=None,
+                              blank=True, null=True, verbose_name="Фото")
 
     def get_absolute_url(self):
         return reverse('location', kwargs = {'loc_id': self.pk})
@@ -139,6 +141,7 @@ class Reserve(models.Model):
         (i, f'{i}:00') for i in range(START_TIME, END_TIME)
     )
 
+    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания', blank=True, null=True,)
     date_reserve = models.DateField(verbose_name = 'Дата проведения')
     time_reserve = models.IntegerField(choices=Time_choices, verbose_name="Время брони")
     quantity = models.IntegerField(default=1, verbose_name ='Кол-во человек')
@@ -147,7 +150,8 @@ class Reserve(models.Model):
     trainer_id = models.ForeignKey(Trainer, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name ='Тренер')
 
     def get_absolute_url(self):
-        return reverse('reserve', kwargs = {'reserve_id': self.pk})
+        return reverse('reserve')
+        #return reverse('reserve', kwargs = {'reserve_id': self.pk})
     
     def __str__(self) -> str:
         return f'Бронь на {self.date_reserve} в {self.time_reserve}'

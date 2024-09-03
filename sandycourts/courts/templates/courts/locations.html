@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <h2>Контакты</h2>
@@ -8,8 +10,12 @@
     {% for location in locations %} 
     <div class="col"> 
         <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
             <div class="card-body">
+                {% if location.photo %}
+                  <img src="{{location.photo.url}}" class="card-img-top" alt="...">
+                {% else %}
+                  <img src="заглушка" class="card-img-top" alt="...">
+                {% endif %}
             <h5 class="card-title">{{ location.name }}</h5>
             <p class="card-text">{{ location.adress }}</p>
             <p class="card-text">{{ location.phone_number }}</p>

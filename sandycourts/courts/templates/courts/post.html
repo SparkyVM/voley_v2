@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h1>{{post.title}}</h1>
 <p>{{post.text}}</p>
-
 {{post.content|linebreaks}}
+{% if post.photo %}
+        <img src="{{post.photo.url}}" class="card-img-top" alt="...">
+      {% else %}
+        <img src="заглушка" class="card-img-top" alt="...">
+      {% endif %}
+
 {% endblock %}
