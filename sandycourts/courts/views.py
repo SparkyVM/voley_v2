@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import models
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import *
 from .utils import LocationMixin
 from .forms import AddReserveForm, AddNewsForm
@@ -16,7 +16,7 @@ menu = [
         {'title': "Контакты", 'url_name': 'contacts'}
 ]
 
-    # Классы для НОВОСТЕЙ
+    #  === Классы для НОВОСТЕЙ ===
     
 class NewsList(ListView):
     model = News
@@ -46,8 +46,31 @@ class ShowPost(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(News.published, slug=self.kwargs[self.slug_url_kwarg])
    
+        # Добавление Новости
+class AddNews(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    form_class = AddNewsForm
+    template_name = 'courts/add_news.html'
+    title_page = 'Добавление новости'
+    permission_required = 'courts.add_news' # <приложение>.<действие>_<таблица>
+    success_url = reverse_lazy('news')
 
-    # Классы для Местоположения
+    def form_valid(self, form):
+        res = form.save(commit=False)
+        #messages.success(self.request, "The news was created successfully.")
+        #res.user_id = self.request.user
+        return super().form_valid(form)
+    
+    # Редактирование Новости
+class EditNews(PermissionRequiredMixin, UpdateView):
+    model = News
+    slug_url_kwarg = 'post_slug'
+    fields = ['title', 'content', 'photo', 'is_published']
+    template_name = 'courts/add_news.html'
+    title_page = 'Редактирование новости'
+    permission_required = 'courts.change_news'
+    success_url = reverse_lazy('news')
+
+    #  === Классы для Местоположения ===
 
 class LocationList(ListView):
     model = Location
@@ -74,7 +97,7 @@ class ShowLocation(DetailView):
         return get_object_or_404(Location.objects.filter(pk=self.kwargs.get('loc_id')))
     
 
-# Классы для ТУРНИРОВ
+#  === Классы для ТУРНИРОВ ===
     
 class TournamentList(ListView):
     model = Tournament
@@ -106,7 +129,7 @@ class ShowTournament(DetailView):
         return get_object_or_404(Tournament.objects.filter(slug=self.kwargs.get('tournament_slug')))
 
 
-# Классы для ТРЕНЕРОВОК
+#  === Классы для ТРЕНЕРОВОК ===
   
 class TrainerList(ListView):
     model = Trainer
@@ -132,7 +155,7 @@ class ShowTrainer(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Trainer.objects.filter(pk=self.kwargs.get('trainer_id')))
     
-# Классы для Аренд
+#  === Классы для Аренд ===
 
 class CourtsList(LocationMixin, ListView):
     model = Court
@@ -160,17 +183,20 @@ class ShowCourt(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
 '''
-class ShowCourt(LoginRequiredMixin, CreateView):
+class CourtReserve(LoginRequiredMixin, CreateView): 
+    model = Reserve   
     form_class = AddReserveForm
     template_name = 'courts/court.html'
     title_page = 'Добавление брони'
+    #fields = ['date_reserve', 'time_reserve', 'quantity', 'trainer_id']
+    #'court_id'    
+    #slug_url_kwarg = 'post_slug'
     permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
     success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
     
     def form_valid(self, form):
         res = form.save(commit=False)
         res.user_id = self.request.user
-        print ('___________',res.user_id)
         #res.court_id = Court.objects.filter(pk=self.kwargs.get('court_id'))
         return super().form_valid(form)
         #print('_______',self.get_success_url())
@@ -179,33 +205,20 @@ class ShowCourt(LoginRequiredMixin, CreateView):
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
     
-    # Классы для Брони
-class ReservesList(LoginRequiredMixin, ListView):
+    #  === Классы для Брони ===
+class ReservesList(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     model = Reserve
     template_name = 'courts/show_reserves.html'
     context_object_name = 'reserves'
+    permission_required = 'courts.view_reserve'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title']="Бронь"
         return context
 
-    # Добавление Новости
-class AddNews(LoginRequiredMixin, CreateView):
-    form_class = AddNewsForm
-    template_name = 'courts/add_news.html'
-    title_page = 'Добавление новости'
-    permission_required = 'courts.add_news' # <приложение>.<действие>_<таблица>
-    success_url = reverse_lazy('news')
-
-    def form_valid(self, form):
-        res = form.save(commit=False)
-        #messages.success(self.request, "The news was created successfully.")
-        #res.user_id = self.request.user
-        return super().form_valid(form)
-    
     # Добавление брони
-class AddReserve(LoginRequiredMixin, CreateView):
+class AddReserve(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = AddReserveForm
     template_name = 'courts/add_reserve.html'
     title_page = 'Добавление брони'

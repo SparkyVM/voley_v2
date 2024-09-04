@@ -9,7 +9,8 @@ urlpatterns = [
         # Новости
     path('news/', NewsList.as_view(), name='news'),
     path('news/<slug:post_slug>/', ShowPost.as_view(), name='post'),
-    path('addnews/', AddNews.as_view(), name='addnews'),
+    path('news_add/', AddNews.as_view(), name='news_add'),
+    path('news_edit/<slug:post_slug>/', EditNews.as_view(), name='news_edit'),
     # path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
 
         # Контакты
@@ -26,7 +27,7 @@ urlpatterns = [
 
         # Аренда
     path('courts/', CourtsList.as_view(), name='courts'),
-    path('courts/<int:court_id>/', ShowCourt.as_view(), name='court'),      # Нужен ли
+    path('courts/<int:court_id>/', CourtReserve.as_view(), name='court'),      # Нужен ли
     path('location/<int:loc_id>/', CourtLocation.as_view(), name='location'),
 
     path('res/', ReservesList.as_view(), name='res'),

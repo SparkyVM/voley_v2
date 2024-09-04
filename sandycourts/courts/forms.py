@@ -24,11 +24,10 @@ class AddNewsForm(forms.ModelForm):
 class AddReserveForm(forms.ModelForm):
     court_id = forms.ModelChoiceField(queryset=Court.objects.all(), empty_label="Корт не выбран", label="Корт")
     trainer_id = forms.ModelChoiceField(queryset=Trainer.objects.all(), required=False, empty_label="Без тренера", label="Тренер")
-    
 
     class Meta:
         model = Reserve
-        fields = ['date_reserve', 'time_reserve', 'quantity', 'trainer_id']
+        fields = ['date_reserve', 'time_reserve', 'quantity', 'trainer_id','court_id']
         
         widgets = {
             'date_reserve': forms.DateInput(attrs={'type': 'date'}),        #, 'value': date.today().strftime("%d-%m-%Y")
