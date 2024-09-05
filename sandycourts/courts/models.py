@@ -127,7 +127,7 @@ class Court(models.Model):
         return reverse('court', kwargs = {'court_id': self.pk})
     
     def __str__(self) -> str:
-        return f'{self.court_number}'
+        return f'{self.location.name} №{self.court_number}'
     
     class Meta:
         verbose_name = 'Корт'
@@ -141,7 +141,7 @@ class Reserve(models.Model):
         (i, f'{i}:00') for i in range(START_TIME, END_TIME)
     )
 
-    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания', blank=True, null=True,)
+    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания',     blank=True, null=True,)
     date_reserve = models.DateField(verbose_name = 'Дата проведения')
     time_reserve = models.IntegerField(choices=Time_choices, verbose_name="Время брони")
     quantity = models.IntegerField(default=1, verbose_name ='Кол-во человек')

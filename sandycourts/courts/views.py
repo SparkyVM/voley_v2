@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import Sum
 from django.db import models
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -188,9 +189,6 @@ class CourtReserve(LoginRequiredMixin, CreateView):
     form_class = AddReserveForm
     template_name = 'courts/court.html'
     title_page = 'Добавление брони'
-    #fields = ['date_reserve', 'time_reserve', 'quantity', 'trainer_id']
-    #'court_id'    
-    #slug_url_kwarg = 'post_slug'
     permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
     success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
     
@@ -198,13 +196,24 @@ class CourtReserve(LoginRequiredMixin, CreateView):
         res = form.save(commit=False)
         res.user_id = self.request.user
         #res.court_id = Court.objects.filter(pk=self.kwargs.get('court_id'))
+        q_reserve = Reserve.objects.filter(date_reserve = res.date_reserve, time_reserve = res.time_reserve, court_id = res.court_id)
+        q_court = Court.objects.get(pk = res.court_id.pk)
+        free_space = q_court.capacity - q_reserve.aggregate(Sum('quantity'))['quantity__sum'] - res.quantity
+        free_space2 = q_court.capacity - q_reserve.aggregate(Sum('quantity'))['quantity__sum']
+
+        #print(f'Записей на {res.date_reserve} {res.time_reserve} - {q_reserve.count()}. {q_reserve.aggregate(Sum('quantity'))['quantity__sum']} игроков + {res.quantity}')
+        #print(f'Всего мест на корте - {q_court.capacity}')   #.values_list('capacity', flat=True)
+        print(f'Было - {free_space2}; Осталось {free_space}')
+
+        if free_space < 0:              # ПРОВЕРКА НА СВОБОДНЫЕ МЕСТА  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            form.add_error(None, 'Недостаточно свободных мест')
+        
         return super().form_valid(form)
-        #print('_______',self.get_success_url())
-        #return redirect(self.get_success_url())
     
     def get_object(self, queryset=None):
         return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
     
+
     #  === Классы для Брони ===
 class ReservesList(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     model = Reserve

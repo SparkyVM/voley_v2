@@ -10,7 +10,8 @@
   <div class="card" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title">Бронь от {{ reserve.user_id }}</h5>
-      <p class="card-text">Корт №{{ reserve.court_id }}</p>
+      <p class="card-text">Местоположение: {{ reserve.court_id.location.name }}</p>
+      <p class="card-text">Корт №{{ reserve.court_id.court_number }}</p>
       <p class="card-text">Дата: {{ reserve.date_reserve }}</p>
       <p class="card-text">Время: {{ reserve.time_reserve }}</p>
       <p class="card-text">на {{ reserve.quantity }} человек</p>
