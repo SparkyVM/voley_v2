@@ -196,6 +196,8 @@ class CourtReserve(LoginRequiredMixin, CreateView):
         res = form.save(commit=False)
         res.user_id = self.request.user
         #res.court_id = Court.objects.filter(pk=self.kwargs.get('court_id'))
+        '''
+        перенесено в FORM
         q_reserve = Reserve.objects.filter(date_reserve = res.date_reserve, time_reserve = res.time_reserve, court_id = res.court_id)
         q_court = Court.objects.get(pk = res.court_id.pk)
         free_space = q_court.capacity - q_reserve.aggregate(Sum('quantity'))['quantity__sum'] - res.quantity
@@ -204,10 +206,10 @@ class CourtReserve(LoginRequiredMixin, CreateView):
         #print(f'Записей на {res.date_reserve} {res.time_reserve} - {q_reserve.count()}. {q_reserve.aggregate(Sum('quantity'))['quantity__sum']} игроков + {res.quantity}')
         #print(f'Всего мест на корте - {q_court.capacity}')   #.values_list('capacity', flat=True)
         print(f'Было - {free_space2}; Осталось {free_space}')
-
-        if free_space < 0:              # ПРОВЕРКА НА СВОБОДНЫЕ МЕСТА  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            form.add_error(None, 'Недостаточно свободных мест')
+        #if free_space < 0:              # ПРОВЕРКА НА СВОБОДНЫЕ МЕСТА  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #    form.add_error(None, 'Недостаточно свободных мест')
         
+        '''
         return super().form_valid(form)
     
     def get_object(self, queryset=None):

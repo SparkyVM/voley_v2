@@ -141,9 +141,9 @@ class Reserve(models.Model):
         (i, f'{i}:00') for i in range(START_TIME, END_TIME)
     )
 
-    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания',     blank=True, null=True,)
+    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания')
     date_reserve = models.DateField(verbose_name = 'Дата проведения')
-    time_reserve = models.IntegerField(choices=Time_choices, verbose_name="Время брони")
+    time_reserve = models.IntegerField(choices=Time_choices, blank=False, verbose_name="Время брони")
     quantity = models.IntegerField(default=1, verbose_name ='Кол-во человек')
     user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='reserves', null=True, default=None)
     court_id = models.ForeignKey(Court, on_delete=models.PROTECT, verbose_name ='Корт')
