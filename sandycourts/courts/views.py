@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.paginator import Paginator
 from django.db.models import Sum
 from django.db import models
 from django.contrib import messages
@@ -169,47 +170,23 @@ class CourtsList(LocationMixin, ListView):
         context['title']="Аренда"
         return context
 
-'''
-class ShowCourt(DetailView):
-    template_name = 'courts/court.html'
-    context_object_name = 'court'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = context['court'].court_number
-        #context['menu'] = menu
-        #context['something'] =News.objects.filter(pk=self.kwargs.get('post_id'))
-        return context
-    
-    def get_object(self, queryset=None):
-        return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
-'''
 class CourtReserve(LoginRequiredMixin, CreateView): 
-    model = Reserve   
+    #model = Reserve   
     form_class = AddReserveForm
     template_name = 'courts/court.html'
     title_page = 'Добавление брони'
     permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
     success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
     
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['court_id'] = self.kwargs.get('court_id')
+        return initial
+
     def form_valid(self, form):
         res = form.save(commit=False)
         res.user_id = self.request.user
         #res.court_id = Court.objects.filter(pk=self.kwargs.get('court_id'))
-        '''
-        перенесено в FORM
-        q_reserve = Reserve.objects.filter(date_reserve = res.date_reserve, time_reserve = res.time_reserve, court_id = res.court_id)
-        q_court = Court.objects.get(pk = res.court_id.pk)
-        free_space = q_court.capacity - q_reserve.aggregate(Sum('quantity'))['quantity__sum'] - res.quantity
-        free_space2 = q_court.capacity - q_reserve.aggregate(Sum('quantity'))['quantity__sum']
-
-        #print(f'Записей на {res.date_reserve} {res.time_reserve} - {q_reserve.count()}. {q_reserve.aggregate(Sum('quantity'))['quantity__sum']} игроков + {res.quantity}')
-        #print(f'Всего мест на корте - {q_court.capacity}')   #.values_list('capacity', flat=True)
-        print(f'Было - {free_space2}; Осталось {free_space}')
-        #if free_space < 0:              # ПРОВЕРКА НА СВОБОДНЫЕ МЕСТА  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #    form.add_error(None, 'Недостаточно свободных мест')
-        
-        '''
         return super().form_valid(form)
     
     def get_object(self, queryset=None):
@@ -222,6 +199,7 @@ class ReservesList(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     template_name = 'courts/show_reserves.html'
     context_object_name = 'reserves'
     permission_required = 'courts.view_reserve'
+    paginate_by = 8
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -285,3 +263,20 @@ class AddReserve2(DetailView):                # TEST without Form
         context = super().get_context_data(**kwargs)
         context['title']="Аренда"
         return context
+
+
+'''
+class ShowCourt(DetailView):
+    template_name = 'courts/court.html'
+    context_object_name = 'court'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['court'].court_number
+        #context['menu'] = menu
+        #context['something'] =News.objects.filter(pk=self.kwargs.get('post_id'))
+        return context
+    
+    def get_object(self, queryset=None):
+        return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
+'''

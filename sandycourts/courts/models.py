@@ -82,8 +82,10 @@ class Tournament(models.Model):
 class Trainer(models.Model):    
     last_name = models.CharField(max_length=30, verbose_name = 'Фамилия')
     first_name = models.CharField(max_length=30, verbose_name = 'Имя')
+    bio = models.TextField(blank=True, verbose_name ='Биография')
     contribution = models.DecimalField(max_digits=7, decimal_places=2, verbose_name = 'Цена')
     location = models.ForeignKey('Location', on_delete=models.PROTECT, verbose_name = 'Расположение')
+    
 
     def get_absolute_url(self):
         return reverse('train', kwargs = {'trainer_id': self.pk})
@@ -159,4 +161,35 @@ class Reserve(models.Model):
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
+
+'''
+   # Класс для записи на Турнир
+class TournamentReserve(models.Model):
+    START_TIME = 8
+    END_TIME = 22
+    Time_choices = (
+        (i, f'{i}:00') for i in range(START_TIME, END_TIME)
+    )
+
+    date_create = models.DateField(auto_now_add=True, verbose_name = 'Дата создания')
+    date_reserve = models.DateField(verbose_name = 'Дата проведения')
+    time_reserve = models.IntegerField(choices=Time_choices, blank=False, verbose_name="Время брони")
+    quantity = models.IntegerField(default=1, verbose_name ='Кол-во человек')
+    user_id = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='reserves', null=True, default=None)
+    court_id = models.ForeignKey(Court, on_delete=models.PROTECT, verbose_name ='Корт')
+    trainer_id = models.ForeignKey(Trainer, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name ='Тренер')
+
+    def get_absolute_url(self):
+        return reverse('reserve')
+        #return reverse('reserve', kwargs = {'reserve_id': self.pk})
+    
+    def __str__(self) -> str:
+        return f'Бронь на {self.date_reserve} в {self.time_reserve}'
+    
+    class Meta:
+        verbose_name = 'Бронь'
+        verbose_name_plural = 'Брони'
+'''
+ 
+
 

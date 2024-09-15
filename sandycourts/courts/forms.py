@@ -14,7 +14,7 @@ class AddNewsForm(forms.ModelForm):
 
     class Meta:
         model = News
-        fields = ['title', 'content', 'slug', 'photo', 'is_published']
+        fields = ['title', 'content', 'photo', 'slug', 'is_published']
 
     def clean_title(self):
         title = self.cleaned_data['title']
@@ -82,8 +82,15 @@ class AddReserveForm(forms.ModelForm):
         q_reserve = Reserve.objects.filter(date_reserve = self.cleaned_data['date_reserve'], 
                                            time_reserve = self.cleaned_data['time_reserve'], 
                                            trainer_id = self.cleaned_data['trainer_id'])
-        if q_reserve.count() != 0:
-            raise ValidationError(f'В {self.cleaned_data['time_reserve']}:00 {form_trainer.last_name} {form_trainer.first_name} уже занят')
+        # Проверка - тренер доступен на местоположении
+        q_court = Court.objects.get(pk = self.cleaned_data['court_id'].pk)
+        if form_trainer.location != q_court.location:
+        #if q_trainer.location != q_trainer.location:
+            raise ValidationError(f'Тренер {form_trainer} не доступен на {q_court}')
+        else:
+            # Проверка - занят тренер
+            if q_reserve.count() != 0:
+                raise ValidationError(f'В {self.cleaned_data['time_reserve']}:00 {form_trainer} уже занят')
         return form_trainer
 
     

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Список броней</h2>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+ 
+  {% for reserve in reserves %} 
+  <div class="col"> 
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Бронь от {{ reserve.user_id }}</h5>
+      <p class="card-text">Местоположение: {{ reserve.court_id.location.name }}</p>
+      <p class="card-text">Корт №{{ reserve.court_id.court_number }}</p>
+      <p class="card-text">Дата: {{ reserve.date_reserve }}</p>
+      <p class="card-text">Время: {{ reserve.time_reserve }}:00</p>
+      <p class="card-text">на {{ reserve.quantity }} человек</p>
+      <p class="card-text">Тренер: {{ reserve.trainer_id }}</p>
+      
+    </div>
+  </div>
+</div>
+  {% endfor %}  
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+{% block navigation %}
+{% if page_obj.has_other_pages %}
+<nav class="list-pages">
+    <ul>
+		{% if page_obj.has_previous %}
+		<li class="page-num">
+			<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+		</li>
+		{% endif %}
+
+        {% for p in paginator.page_range %}
+		{% if page_obj.number == p %}
+		<li class="page-num page-num-selected">{{ p }}</li>
+		{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+        <li class="page-num">
+            <a href="?page={{ p }}">{{ p }}</a>
+        </li>
+		{% endif %}
+        {% endfor %}
+
+		{% if page_obj.has_next %}
+		<li class="page-num">
+			<a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+		</li>
+		{% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
