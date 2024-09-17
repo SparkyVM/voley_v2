@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 from courts.views import *
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html', extra_context={"header": "О сайте"}), name='home'),
-    path('about/', TemplateView.as_view(template_name='courts/about.html'), name='about'),
+    path('', TemplateView.as_view(template_name='home.html', extra_context={"title": "SandyCourts"}), name='home'),
+    path('about/', TemplateView.as_view(template_name='courts/about.html', extra_context={"title": "О нас"}), name='about'),
 
         # Новости
     path('news/', NewsList.as_view(), name='news'),

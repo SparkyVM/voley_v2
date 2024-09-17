@@ -8,19 +8,25 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import *
 from .utils import LocationMixin
-from .forms import AddReserveForm, AddNewsForm
+from .forms import AddReserveForm, AddNewsForm #, AddTournamentReserveForm
 
-menu = [
-    {'title': "Новости", 'url_name': 'news'},           # Позже добавить меню
-        {'title': "Турниры", 'url_name': 'tournaments'},
+
+'''
+menu = [{'title': "О нас", 'url_name': 'about'},
+        {'title': "Новости", 'url_name': 'news'},
         {'title': "Тренеры", 'url_name': 'trains'},
-        {'title': "Бронь", 'url_name': 'reservation'},
-        {'title': "Контакты", 'url_name': 'contacts'}
-]
-
+        {'title': "Турниры", 'url_name': 'tournaments/1'},
+        {'title': "Аренда", 'url_name': 'courts'},
+        #{'title': "Статистика", 'url_name': 'stat'},
+        {'title': "Контакты", 'url_name': 'contacts'},
+        ] 
+'''
+ 
     #  === Классы для НОВОСТЕЙ ===
     
 class NewsList(ListView):
+    """Класс для отображения списка Новостей"""
+
     model = News
     template_name = 'courts/show_news.html'
     context_object_name = 'posts'
@@ -28,12 +34,15 @@ class NewsList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):          # возможно не выполняется. Проверить
         context = super().get_context_data(**kwargs)
         context['title']="Страница новостей"
+        #context['menu'] = menu
         return context
     
     def get_queryset(self):
         return News.published.all()
     
 class ShowPost(DetailView):
+    """Класс для отображения выбранной Новости"""
+
     template_name = 'courts/post.html'
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
@@ -41,7 +50,7 @@ class ShowPost(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = context['post'].title
-        context['menu'] = menu
+        #context['menu'] = menu
         #context['something'] =News.objects.filter(pk=self.kwargs.get('post_id'))
         return context
     
@@ -49,7 +58,12 @@ class ShowPost(DetailView):
         return get_object_or_404(News.published, slug=self.kwargs[self.slug_url_kwarg])
    
         # Добавление Новости
-class AddNews(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+class AddNews(PermissionRequiredMixin, CreateView):     #LoginRequiredMixin
+    """Класс для добавдения Новости
+    
+    Доступен для пользователей с наличием прав на добавление Новости
+    """
+
     form_class = AddNewsForm
     template_name = 'courts/add_news.html'
     title_page = 'Добавление новости'
@@ -64,6 +78,11 @@ class AddNews(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     
     # Редактирование Новости
 class EditNews(PermissionRequiredMixin, UpdateView):
+    """Класс для редактирования Новости
+    
+    Доступен для пользователей с наличием прав на редактирование Новости
+    """
+
     model = News
     slug_url_kwarg = 'post_slug'
     fields = ['title', 'content', 'photo', 'is_published']
@@ -75,6 +94,8 @@ class EditNews(PermissionRequiredMixin, UpdateView):
     #  === Классы для Местоположения ===
 
 class LocationList(ListView):
+    """Класс для отображения списка Местоположений"""
+
     model = Location
     template_name = 'courts/locations.html'
     context_object_name = 'locations'
@@ -84,7 +105,9 @@ class LocationList(ListView):
         context['title']="Локации"
         return context
     
-class ShowLocation(DetailView):
+class ShowLocation(DetailView):             # не используется ????
+    """Класс для отображения выбранного Местоположения"""
+
     template_name = 'courts/location.html'
     context_object_name = 'location'
 
@@ -102,6 +125,8 @@ class ShowLocation(DetailView):
 #  === Классы для ТУРНИРОВ ===
     
 class TournamentList(ListView):
+    """Класс для отображения списка Турниров"""
+
     model = Tournament
     template_name = 'courts/show_tournaments.html'
     context_object_name = 'tournaments'
@@ -116,6 +141,8 @@ class TournamentList(ListView):
         return Tournament.objects.all().filter(is_active=self.kwargs['stat'])
 
 class ShowTournament(DetailView):
+    """Класс для отображения выбранного Турнира"""
+
     template_name = 'courts/tournament.html'
     slug_url_kwarg = 'post_slug'
     context_object_name = 'tournament'
@@ -130,10 +157,37 @@ class ShowTournament(DetailView):
     def get_object(self, queryset=None):
         return get_object_or_404(Tournament.objects.filter(slug=self.kwargs.get('tournament_slug')))
 
+'''
+class TournamentReserve(LoginRequiredMixin, CreateView):
+    """Класс для записи на Турнир"""
 
+    #model = Reserve   
+    form_class = AddTournamentReserveForm
+    template_name = 'courts/court.html'
+    title_page = 'Запись на турнир'
+    permission_required = 'courts.add_reserve' # <приложение>.<действие>_<таблица>
+    success_url = reverse_lazy('courts')       # Проверить!!! должно перенаправляться GetURL модели Reserve
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['court_id'] = self.kwargs.get('court_id')
+        return initial
+
+    def form_valid(self, form):
+        res = form.save(commit=False)
+        res.user_id = self.request.user
+        #res.court_id = Court.objects.filter(pk=self.kwargs.get('court_id'))
+        return super().form_valid(form)
+    
+    def get_object(self, queryset=None):
+        return get_object_or_404(Court.objects.filter(pk=self.kwargs.get('court_id')))
+'''
+        
 #  === Классы для ТРЕНЕРОВОК ===
   
 class TrainerList(ListView):
+    """Класс для отображения списка Тренеров"""
+
     model = Trainer
     template_name = 'courts/show_trainers.html'
     context_object_name = 'trainers'
@@ -144,6 +198,8 @@ class TrainerList(ListView):
         return context
     
 class ShowTrainer(DetailView):
+    """Класс для отображения информации о выбранном Тренере"""
+
     template_name = 'courts/trainer.html'
     context_object_name = 'trainer'
 
@@ -160,6 +216,8 @@ class ShowTrainer(DetailView):
 #  === Классы для Аренд ===
 
 class CourtsList(LocationMixin, ListView):
+    """Класс для отображения списка Кортов"""
+
     model = Court
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
@@ -170,7 +228,12 @@ class CourtsList(LocationMixin, ListView):
         context['title']="Аренда"
         return context
 
-class CourtReserve(LoginRequiredMixin, CreateView): 
+class CourtReserve(LoginRequiredMixin, CreateView):
+    """Класс для бронирования Корта
+    
+    Доступен для пользователей с наличием прав на добавление Брони
+    """
+
     #model = Reserve   
     form_class = AddReserveForm
     template_name = 'courts/court.html'
@@ -195,6 +258,11 @@ class CourtReserve(LoginRequiredMixin, CreateView):
 
     #  === Классы для Брони ===
 class ReservesList(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    """Класс для отображения списка Броней
+    
+    Доступен для пользователей с наличием прав на просмотр Броней
+    """
+
     model = Reserve
     template_name = 'courts/show_reserves.html'
     context_object_name = 'reserves'
@@ -208,6 +276,8 @@ class ReservesList(PermissionRequiredMixin, LoginRequiredMixin, ListView):
 
     # Добавление брони
 class AddReserve(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    """Класс для добавления Брони -----На данный момент не используется !!!! """
+
     form_class = AddReserveForm
     template_name = 'courts/add_reserve.html'
     title_page = 'Добавление брони'
@@ -237,6 +307,8 @@ class AddReserve(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
 
     # Фильтр Кортов по Местоположению
 class CourtLocation (LocationMixin, ListView):
+    """Класс для формирования фильтра Кортов по Месторождению"""
+
     template_name = 'courts/show_courts.html'
     context_object_name = 'courts'
     allow_empty = False
@@ -253,7 +325,8 @@ class CourtLocation (LocationMixin, ListView):
                                       )
     
 
-class AddReserve2(DetailView):                # TEST without Form
+class AddReserve2(DetailView):
+    """Класс для добавдения брони ---- На данный момент не используется--- Тестовый класс. Без использования формы"""
 
     model = Court
     template_name = 'courts/court_test.html'

@@ -6,16 +6,27 @@ from django.contrib.auth import get_user_model
 
     # Менеджер для Новостей
 class PublishedManager(models.Manager):
+    """Класс менеджер модели
+    
+    Используется для фильтрации опубликованных постов
+    """
+
     def get_queryset(self):
         return super().get_queryset().filter(is_published=1)
 
    # Менеджер для Турниров 
 class ActiveTournamentManager(models.Manager):
+    """Класс менеджер модели
+    
+    Используется для фильтрации активных турниров
+    """
+
     def get_queryset(self):
         return super().get_queryset().filter(is_active=1)
 
     # Класс для Новостей
 class News(models.Model):
+    """Класс модели Новости"""
 
     title = models.CharField(max_length=150, verbose_name ='Заголовок')
     content = models.TextField(blank=True, verbose_name ='Текст статьи')
@@ -46,6 +57,8 @@ class News(models.Model):
     
     # Класс для Турниров
 class Tournament(models.Model):
+    """Класс модели Турнира"""
+
     GENDER_CHOICES = (
         ('M', 'Мужской'),
         ('F', 'Женский'),
@@ -79,7 +92,9 @@ class Tournament(models.Model):
         verbose_name_plural = 'Турниры'
     
     # Класс для Тренеров
-class Trainer(models.Model):    
+class Trainer(models.Model):
+    """Класс модели Тренера""" 
+
     last_name = models.CharField(max_length=30, verbose_name = 'Фамилия')
     first_name = models.CharField(max_length=30, verbose_name = 'Имя')
     bio = models.TextField(blank=True, verbose_name ='Биография')
@@ -99,6 +114,8 @@ class Trainer(models.Model):
 
     # Класс для Местоположений
 class Location(models.Model):
+    """Класс модели Местоположения"""
+
     name = models.CharField(max_length=50, verbose_name ='Название')
     adress = models.CharField(max_length=100, verbose_name ='Адрес')
     phone_number = models.CharField(max_length=30, verbose_name ='Телефон')
@@ -118,6 +135,8 @@ class Location(models.Model):
 
     # Класс для Кортов
 class Court(models.Model):
+    """Класс модели Корта"""
+
     court_number = models.IntegerField(default=0, verbose_name ='№ корта')
     capacity = models.IntegerField(default=0, verbose_name ='Вместимость')
     location = models.ForeignKey(Location, on_delete=models.PROTECT, verbose_name ='Расположение')
@@ -137,6 +156,8 @@ class Court(models.Model):
 
     # Класс для Брони
 class Reserve(models.Model):
+    """Класс модели Брони корта"""
+
     START_TIME = 8
     END_TIME = 22
     Time_choices = (
@@ -165,6 +186,7 @@ class Reserve(models.Model):
 '''
    # Класс для записи на Турнир
 class TournamentReserve(models.Model):
+
     START_TIME = 8
     END_TIME = 22
     Time_choices = (

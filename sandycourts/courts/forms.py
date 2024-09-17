@@ -11,6 +11,7 @@ from django.db.models import Sum
 
     # Форма добавления Новости
 class AddNewsForm(forms.ModelForm):
+    """Класс формы для добавления Новости"""
 
     class Meta:
         model = News
@@ -25,6 +26,7 @@ class AddNewsForm(forms.ModelForm):
     
     # Форма добавления Брони
 class AddReserveForm(forms.ModelForm):
+    """Класс формы для добавления Брони Корта"""
 
     date_reserve = forms.DateField(initial=date.today(), label='Дата брони', widget=forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'} ) )
     #time_reserve = forms.ChoiceField(widget=forms.RadioSelect(choices=model.Time_choices), label='Время брони')
@@ -41,24 +43,32 @@ class AddReserveForm(forms.ModelForm):
         }
     
     def clean_date_reserve(self):
+        """Метод валидации даты брони"""
+
         form_date_reserve = self.cleaned_data['date_reserve']
         if form_date_reserve < date.today():
             raise ValidationError("Дата должна быть больше или равна текущей")
         return form_date_reserve
     
     def clean_time_reserve(self):                   # !!!!!! Доделать. Должно быть не доступно Без времени
+        """Метод валидации времени брони"""
+
         form_time_reserve = self.cleaned_data['time_reserve']
         if not form_time_reserve:
             raise ValidationError("Выберите время")
         return form_time_reserve
         
     def clean_court_id(self):
+        """Метод валидации выбранного Корта"""
+
         form_court_id = self.cleaned_data['court_id']
         if not form_court_id:
             raise ValidationError("Выберите корт")
         return form_court_id
 
     def clean_quantity(self):
+        """Метод валидации количества игроков на корте"""
+
         form_quantity = self.cleaned_data['quantity']
         q_reserve = Reserve.objects.filter(date_reserve = self.cleaned_data['date_reserve'], 
                                            time_reserve = self.cleaned_data['time_reserve'], 
@@ -78,6 +88,8 @@ class AddReserveForm(forms.ModelForm):
         return form_quantity
     
     def clean_trainer_id(self):
+        """Метод валидации доступности Тренера"""
+
         form_trainer = self.cleaned_data['trainer_id']
         q_reserve = Reserve.objects.filter(date_reserve = self.cleaned_data['date_reserve'], 
                                            time_reserve = self.cleaned_data['time_reserve'], 
@@ -93,7 +105,25 @@ class AddReserveForm(forms.ModelForm):
                 raise ValidationError(f'В {self.cleaned_data['time_reserve']}:00 {form_trainer} уже занят')
         return form_trainer
 
-    
+'''
+    # Форма записи на Турнир
+class AddTournamentReserveForm(forms.ModelForm):
+
+    date_reserve = forms.DateField(initial=date.today(), label='Дата брони', widget=forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'} ) )
+    #time_reserve = forms.ChoiceField(widget=forms.RadioSelect(choices=model.Time_choices), label='Время брони')
+    quantity = forms.IntegerField(initial=1, label='Кол-во человек')
+    court_id = forms.ModelChoiceField(queryset=Court.objects.all(), empty_label="Корт не выбран", label="Корт")
+    trainer_id = forms.ModelChoiceField(queryset=Trainer.objects.all(), required=False, empty_label="Без тренера", label="Тренер")
+
+    class Meta:
+        model = Reserve
+        fields = ['court_id', 'date_reserve', 'time_reserve', 'quantity', 'trainer_id']
+
+        widgets = {
+            'time_reserve' : forms.RadioSelect(choices=model.Time_choices)
+        }
+'''
+
 '''
 class AddReserveForm(forms.ModelForm):
     court_id = forms.ModelChoiceField(queryset=Court.objects.all(), empty_label="Корт не выбран", label="Корт")
