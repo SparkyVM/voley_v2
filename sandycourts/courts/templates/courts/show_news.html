@@ -7,6 +7,7 @@
 
 
 <h2>Новости</h2>
+
 <div class="row row-cols-1 row-cols-md-4 g-4">
  
   {% for post in posts %}  
@@ -30,13 +31,14 @@
 
 
   <!-- Добавление Новости -->
-<hr>
+
 <a href="{% url 'news_add' %}" class="btn btn-primary">Добавить новость</a>
 <hr>
 
   <!-- Блок Галереи -->
 <h2>Фотогалерея</h2>
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+
+<div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="true">
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -45,16 +47,16 @@
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active" data-bs-interval="3000">
-      <img src="{% static 'courts/images/main_1.jpg' %}" class="d-block w-100" alt="..." >
+      <img src="{% static 'courts/images/photo_1.jpg' %}" class="d-block w-100" alt="photo_1" >
     </div>
     <div class="carousel-item" data-bs-interval="3000">
-      <img src="{% static 'courts/images/main_2.jpg' %}" class="d-block w-100" alt="...">
+      <img src="{% static 'courts/images/photo_2.jpg' %}" class="d-block w-100" alt="photo_2">
     </div>
     <div class="carousel-item" data-bs-interval="3000">
-      <img src="{% static 'courts/images/main_3.jpg' %}" class="d-block w-100" alt="...">
+      <img src="{% static 'courts/images/photo_3.jpg' %}" class="d-block w-100" alt="photo_3">
     </div>
     <div class="carousel-item" data-bs-interval="3000">
-      <img src="{% static 'courts/images/main_4.jpg' %}" class="d-block w-100" alt="...">
+      <img src="{% static 'courts/images/photo_4.jpg' %}" class="d-block w-100" alt="photo_4">
     </div>
   </div>
   

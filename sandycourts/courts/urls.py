@@ -11,7 +11,6 @@ urlpatterns = [
     path('news/<slug:post_slug>/', ShowPost.as_view(), name='post'),
     path('news_add/', AddNews.as_view(), name='news_add'),
     path('news_edit/<slug:post_slug>/', EditNews.as_view(), name='news_edit'),
-    # path('<slug:article_slug>/', ShowArticle.as_view(), name='article'),
 
         # Контакты
     path('contacts/', LocationList.as_view(), name='contacts'),
@@ -33,7 +32,5 @@ urlpatterns = [
     path('res/', ReservesList.as_view(), name='res'),
     path('addres/', AddReserve.as_view(), name='addres'),
     path('addres2/', AddReserve2.as_view(), name='addres2'),
-
-    
     
 ]

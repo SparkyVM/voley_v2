@@ -43,7 +43,8 @@ class TrainerAdmin(admin.ModelAdmin):
 admin.site.register(Trainer, TrainerAdmin)
 
 class ReserveAdmin(admin.ModelAdmin):
-    list_display =['date_reserve', 'time_reserve', 'court_id', 'quantity', 'user_id']
+    list_display = ['date_reserve', 'time_reserve', 'court_id', 'quantity', 'user_id']
     ordering = ['-date_reserve']
+    list_filter = ['court_id', 'user_id']
 
 admin.site.register(Reserve, ReserveAdmin)

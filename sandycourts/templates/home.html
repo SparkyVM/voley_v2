@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 
     <h1>Добро пожаловать на корты Sandycourts</h1>
@@ -7,5 +9,5 @@
     <h2>Погрузись в атмосферу пляжного волейбола: </h2> 
     <h2>получи безграничное удовольствие с каждой подачей!</h2>
     <br>
-    
+    <img src="{% static 'courts/images/start.jpg' %}" class="d-block w-100" alt="start">
 {% endblock %}
